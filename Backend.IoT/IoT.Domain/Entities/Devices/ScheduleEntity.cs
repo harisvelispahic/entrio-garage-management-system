@@ -1,4 +1,5 @@
-﻿
+﻿using System;
+
 namespace IoT.Domain.Entities.Devices;
 
 public class ScheduleEntity
@@ -6,29 +7,38 @@ public class ScheduleEntity
     public Guid Id { get; private set; }
     public Guid DeviceId { get; private set; }
 
-    public DeviceCommandType Action { get; private set; }
-    public TimeSpan TimeOfDay { get; private set; }
-    public int DaysOfWeekMask { get; private set; } // Mon–Sun bitmask
+    public DeviceCommandType CommandType { get; private set; }
+    public int? TargetPercentage { get; private set; }
 
-    public bool IsActive { get; private set; }
+    public DateTime ExecuteAtUtc { get; private set; }
+
+    public bool IsActive { get; private set; } = true;
+
+    public bool WasTriggered { get; private set; } = false;
 
     private ScheduleEntity() { }
 
     public ScheduleEntity(
         Guid deviceId,
-        DeviceCommandType action,
-        TimeSpan timeOfDay,
-        int daysOfWeekMask)
+        DeviceCommandType commandType,
+        int? targetPercentage,
+        DateTime executeAtUtcUtc)
     {
         Id = Guid.NewGuid();
         DeviceId = deviceId;
-        Action = action;
-        TimeOfDay = timeOfDay;
-        DaysOfWeekMask = daysOfWeekMask;
+        CommandType = commandType;
+        TargetPercentage = targetPercentage;
+        ExecuteAtUtc = executeAtUtcUtc;
         IsActive = true;
+        WasTriggered = false;
     }
 
-    public void Disable()
+    public void MarkTriggered()
+    {
+        WasTriggered = true;
+    }
+
+    public void Deactivate()
     {
         IsActive = false;
     }

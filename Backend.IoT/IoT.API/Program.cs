@@ -3,12 +3,15 @@ using IoT.Application.Devices;
 using IoT.Application.Devices.Events;
 using IoT.Application.Identity;
 using IoT.Domain.Entities.Identity;
+using IoT.Infrastructure.Background;
 using IoT.Infrastructure.Database;
 using IoT.Infrastructure.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using IoT.Infrastructure.Background;
+
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -87,6 +90,9 @@ builder.Services.AddScoped<IPinHasher, PinHasher>();
 builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 builder.Services.AddScoped<LoginService>();
 builder.Services.AddScoped<IDeviceAuthenticator, DeviceAuthenticator>();
+
+builder.Services.AddHostedService<ScheduleWorker>();
+
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
