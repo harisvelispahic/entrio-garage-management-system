@@ -1,0 +1,59 @@
+// API Configuration
+// Change this to your ASP.NET backend URL
+export const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5263/api";
+
+// Polling interval for door status (in milliseconds)
+export const DOOR_STATUS_POLL_INTERVAL = 3000;
+
+// Door commands enum matching backend
+export enum DoorCommand {
+  OPEN = 0,
+  CLOSE = 1,
+  STOP = 2,
+  VENT = 3,
+}
+
+// Door states
+export enum DoorState {
+  Closed = 0,
+  Opening = 1,
+  Open = 2,
+  Closing = 3,
+  Stopped = 4,
+  Error = 5,
+}
+
+// API Response types
+export interface LoginResponse {
+  token: string;
+}
+
+export interface DoorStatus {
+  position: number; // 0-100, 0 = closed, 100 = open
+  state: DoorState;
+  lastUpdated?: string;
+}
+
+export interface Schedule {
+  id: string;
+  deviceId: string;
+  commandType: DoorCommand;
+  targetPercentage?: number;
+  executeAtUtc: string;
+  isActive: boolean;
+  wasTriggered: boolean;
+}
+
+export interface DoorEvent {
+  id: string;
+  eventType: string;
+  source: "RFID" | "Web" | "Schedule" | "Manual";
+  user?: string;
+  timestamp: string;
+  details?: string;
+}
+
+export interface CommandRequest {
+  command: DoorCommand;
+  percentage: number | null;
+}

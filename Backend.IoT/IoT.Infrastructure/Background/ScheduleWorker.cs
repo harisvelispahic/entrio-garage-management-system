@@ -37,8 +37,10 @@ public class ScheduleWorker : BackgroundService
                     schedule.CommandType,
                     schedule.CommandType == DeviceCommandType.Vent
                         ? schedule.TargetPercentage
-                        : null
+                        : null,
+                    suppressAutoClose: true   // IMPORTANT
                 );
+
 
                 db.DeviceCommands.Add(command);
 

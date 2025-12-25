@@ -1,6 +1,7 @@
 ﻿using IoT.Application.Common;
 using IoT.Domain.Entities.Devices;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace IoT.Application.Devices.Events;
 
@@ -31,10 +32,21 @@ public sealed class CreateDeviceEventCommandHandler
         _db.DeviceEvents.Add(ev);
         await _db.SaveChangesAsync(cancellationToken);
 
-        // 👇 ONLY schedule when the door actually opened
+        // ONLY schedule when the door actually opened
         if (request.Type == DeviceEventType.DoorOpened)
         {
-            await _autoClose.ScheduleAutoCloseAsync(request.DeviceId);
+            // get the last executed command for this device
+            var lastCommand = await _db.DeviceCommands
+                .Where(c => c.DeviceId == request.DeviceId)
+                .OrderByDescending(c => c.CreatedAtUtc)
+                .FirstOrDefaultAsync(cancellationToken);
+
+            // if there's no command, or auto-close is NOT suppressed → schedule
+            if (lastCommand is null || !lastCommand.SuppressAutoClose)
+            {
+                await _autoClose.ScheduleAutoCloseAsync(request.DeviceId);
+            }
         }
+
     }
 }

@@ -1,6 +1,7 @@
 ﻿using IoT.Application.Common;
 using IoT.Domain.Entities.Devices;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace IoT.API.Controllers;
 
@@ -63,4 +64,31 @@ public class SchedulesController : ControllerBase
             executeAtUtc = schedule.ExecuteAtUtc
         });
     }
+
+    [HttpGet]
+    public async Task<IActionResult> GetSchedules(Guid deviceId)
+    {
+        var schedules = await _db.Schedules
+            .Where(x => x.DeviceId == deviceId)
+            .ToListAsync();
+
+        return Ok(schedules);
+    }
+
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> DeleteSchedule(Guid id)
+    {
+        var schedule = await _db.Schedules.FindAsync(id);
+
+        if (schedule == null)
+            return NotFound();
+
+        _db.Schedules.Remove(schedule);
+
+        await _db.SaveChangesAsync();
+
+        return NoContent();
+    }
+
+
 }

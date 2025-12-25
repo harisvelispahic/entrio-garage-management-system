@@ -23,6 +23,26 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
 
+
+builder.Services.AddCors(options =>
+{
+    //options.AddPolicy("AllowFrontendV0",
+    //    builder => builder
+    //        .WithOrigins("http://localhost:3000")
+    //        .AllowAnyMethod()
+    //        .AllowAnyHeader()
+    //        .AllowCredentials());
+
+    options.AddPolicy("AllowFrontendLovable",
+        builder => builder
+            .WithOrigins("http://localhost:8080")
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials());
+});
+
+
+
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
@@ -113,6 +133,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors("AllowFrontendLovable");
 
 app.UseHttpsRedirection();
 

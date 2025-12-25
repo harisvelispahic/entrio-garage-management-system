@@ -59,4 +59,36 @@ public class DoorController : ControllerBase
 
         return Accepted();
     }
+
+    [HttpGet("status")]
+    public async Task<IActionResult> GetStatus(CancellationToken ct)
+    {
+        // 1) For now just take the first device (later you can pass deviceId from frontend)
+        var device = await _db.Devices.FirstAsync(ct);
+
+        // 2) Get status row for this device
+        var status = await _db.DeviceStatuses
+            .SingleOrDefaultAsync(s => s.DeviceId == device.Id, ct);
+
+        // 3) If no status exists yet, return a safe default
+        if (status == null)
+        {
+            return Ok(new
+            {
+                position = 0,
+                state = DoorState.Closed,    // or DoorState.Error if you prefer "unknown"
+                lastUpdated = (DateTime?)null
+            });
+        }
+
+        // 4) Map entity -> DTO shape expected by frontend
+        return Ok(new
+        {
+            position = status.PositionPercent,
+            state = status.DoorState,
+            lastUpdated = status.UpdatedAtUtc
+        });
+    }
+
+
 }

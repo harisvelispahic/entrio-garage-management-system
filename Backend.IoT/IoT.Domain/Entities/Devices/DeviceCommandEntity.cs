@@ -11,13 +11,16 @@ public class DeviceCommandEntity
     public DeviceCommandStatus Status { get; /* private */ set; }
     public DateTime CreatedAtUtc { get; private set; }
     public DateTime? AcknowledgedAtUtc { get; private set; }
+    public bool SuppressAutoClose { get; private set; }
+
 
     private DeviceCommandEntity() { }
 
     public DeviceCommandEntity(
         Guid deviceId,
         DeviceCommandType commandType,
-        int? targetPercentage = null)
+        int? targetPercentage = null,
+        bool suppressAutoClose = false)
     {
         Id = Guid.NewGuid();
         DeviceId = deviceId;
@@ -26,6 +29,7 @@ public class DeviceCommandEntity
 
         Status = DeviceCommandStatus.Pending;
         CreatedAtUtc = DateTime.UtcNow;
+        SuppressAutoClose = suppressAutoClose;
     }
 
     public void MarkAcknowledged()
