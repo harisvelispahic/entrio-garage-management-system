@@ -73,13 +73,11 @@ public class DoorController : ControllerBase
         // 3) If no status exists yet, return a safe default
         if (status == null)
         {
-            return Ok(new
-            {
-                position = 0,
-                state = DoorState.Closed,    // or DoorState.Error if you prefer "unknown"
-                lastUpdated = (DateTime?)null
-            });
+            status = new DeviceStatusEntity(device.Id);
+            _db.DeviceStatuses.Add(status);
+            await _db.SaveChangesAsync(ct);
         }
+
 
         // 4) Map entity -> DTO shape expected by frontend
         return Ok(new
