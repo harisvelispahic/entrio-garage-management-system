@@ -90,6 +90,7 @@ builder.Services.AddScoped<IPinHasher, PinHasher>();
 builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 builder.Services.AddScoped<LoginService>();
 builder.Services.AddScoped<IDeviceAuthenticator, DeviceAuthenticator>();
+builder.Services.AddScoped<AutoCloseService>();
 
 builder.Services.AddHostedService<ScheduleWorker>();
 

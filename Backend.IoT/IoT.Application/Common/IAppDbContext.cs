@@ -15,6 +15,7 @@ public interface IAppDbContext
     DbSet<DeviceCommandEntity> DeviceCommands { get; }
     DbSet<DeviceEventEntity> DeviceEvents { get; }
     DbSet<ScheduleEntity> Schedules { get; }
+    DbSet<AutoCloseSettingsEntity> AutoCloseSettings { get; }
 
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);

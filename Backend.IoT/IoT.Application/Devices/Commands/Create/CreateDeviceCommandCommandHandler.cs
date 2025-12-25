@@ -19,7 +19,6 @@ public sealed class CreateDeviceCommandCommandHandler
     CreateDeviceCommandCommand request,
     CancellationToken ct)
     {
-        // Cancel all older pending commands for this device
         var pending = await _db.DeviceCommands
             .Where(c =>
                 c.DeviceId == request.DeviceId &&
@@ -29,7 +28,6 @@ public sealed class CreateDeviceCommandCommandHandler
         foreach (var cmd in pending)
             cmd.Status = DeviceCommandStatus.Cancelled;
 
-        // 👇 IMPORTANT — pass percentage into entity
         var newCommand = new DeviceCommandEntity(
             request.DeviceId,
             request.CommandType,
@@ -37,6 +35,7 @@ public sealed class CreateDeviceCommandCommandHandler
         );
 
         _db.DeviceCommands.Add(newCommand);
+
         await _db.SaveChangesAsync(ct);
     }
 

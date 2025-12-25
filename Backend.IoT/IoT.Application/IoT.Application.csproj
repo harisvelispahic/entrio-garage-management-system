@@ -15,8 +15,4 @@
     <ProjectReference Include="..\IoT.Domain\IoT.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Devices\Services\" />
-  </ItemGroup>
-
 </Project>

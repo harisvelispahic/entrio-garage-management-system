@@ -21,6 +21,8 @@ public class AppDbContext : DbContext, IAppDbContext
     public DbSet<DeviceCommandEntity> DeviceCommands => Set<DeviceCommandEntity>();
     public DbSet<DeviceEventEntity> DeviceEvents => Set<DeviceEventEntity>();
     public DbSet<ScheduleEntity> Schedules => Set<ScheduleEntity>();
+    public DbSet<AutoCloseSettingsEntity> AutoCloseSettings => Set<AutoCloseSettingsEntity>();
+
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -28,6 +30,13 @@ public class AppDbContext : DbContext, IAppDbContext
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+
+        modelBuilder.Entity<AutoCloseSettingsEntity>()
+            .HasOne<DeviceEntity>()
+            .WithOne()
+            .HasForeignKey<AutoCloseSettingsEntity>(x => x.DeviceId)
+            .OnDelete(DeleteBehavior.Cascade);
+
 
     }
 }
