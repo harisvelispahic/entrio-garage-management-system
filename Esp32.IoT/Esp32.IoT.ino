@@ -223,6 +223,36 @@ void sendDeviceEvent(const char* type, const char* source) {
   httpPostJson(String(SERVER_BASE_URL) + "/api/device/events", body);
 }
 
+// =====================================================
+// STATUS UPDATES → /api/device/status
+// =====================================================
+void sendStatusUpdate() {
+  if (WiFi.status() != WL_CONNECTED) return;
+
+  HTTPClient http;
+  http.begin(String(SERVER_BASE_URL) + "/api/device/status");
+  http.addHeader("Content-Type", "application/json");
+  http.addHeader("X-Device-Key", DEVICE_KEY);
+
+  StaticJsonDocument<256> doc;
+
+  doc["deviceId"] = "0f8fad5b-d9cb-469f-a165-70867728950e";   // <-- IMPORTANT
+  doc["doorState"] = (int)doorState;
+  doc["positionPercent"] = map(stepper.currentPosition(), CLOSED_POSITION, OPEN_POSITION, 0, 100);
+  doc["obstacleDetected"] = obstacleDetected();
+
+  String body;
+  serializeJson(doc, body);
+
+  int code = http.POST(body);
+
+  Serial.print("STATUS POST -> ");
+  Serial.println(code);
+
+  http.end();
+}
+
+
 void processPendingHttpEvents() {
   ensureWiFi();
   if (WiFi.status() != WL_CONNECTED) return;
@@ -348,6 +378,7 @@ void startOpen(LastSource src) {
   opening = true;
 
   doorState = DoorState::Opening;
+  sendStatusUpdate();
   lastOpenSource = src;
 
   stepper.moveTo(OPEN_POSITION);
@@ -367,6 +398,7 @@ void startClose() {
   opening = false;
 
   doorState = DoorState::Closing;
+  sendStatusUpdate();
 
   // reset obstacle tracking for a fresh close cycle
   obstacleLatched = false;
@@ -390,6 +422,7 @@ void stopDoor() {
   motorActive = false;
   motorPaused = true;
   doorState = DoorState::Stopped;
+  sendStatusUpdate();
 
   cancelStepperTargetToCurrent();
   Serial.println("Door STOPPED");
@@ -635,6 +668,7 @@ void runMotor() {
 
         // remember we must resume closing later
         resumeClosingAfterObstacle = true;
+        sendStatusUpdate();
 
         // cancel target so it doesn't keep trying
         cancelStepperTargetToCurrent();
@@ -664,6 +698,7 @@ void runMotor() {
     ventingActive = false;
     doorState = DoorState::Stopped;   // ← IMPORTANT
     pendingDoorOpenedEvent = true;    // still valid logically
+    sendStatusUpdate();
     return;
   }
 
@@ -672,11 +707,13 @@ void runMotor() {
       Serial.println("Door fully open");
       doorState = DoorState::Open;
       pendingDoorOpenedEvent = true;
+      sendStatusUpdate();
       // no auto-close (as requested)
     } else {
       Serial.println("Door fully closed");
       doorState = DoorState::Closed;
       pendingDoorClosedEvent = true;
+      sendStatusUpdate();
     }
   }
 }
@@ -712,6 +749,12 @@ void setup() {
 void loop() {
   processPendingHttpEvents();
   pollRemoteCommands();
+
+  static unsigned long lastStatusMs = 0;
+  if (millis() - lastStatusMs > 10000) {
+    sendStatusUpdate();
+    lastStatusMs = millis();
+  }
 
   if (!motorActive) {
     checkRFID();

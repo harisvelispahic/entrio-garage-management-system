@@ -23,6 +23,8 @@ export enum DoorState {
   Error = 5,
 }
 
+export const DoorStateLabels: string[] = ["closed", "opening", "open", "closing", "stopped", "error"];
+
 // API Response types
 export interface LoginResponse {
   token: string;

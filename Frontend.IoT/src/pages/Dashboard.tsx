@@ -4,7 +4,7 @@ import { DoorControls } from "@/components/door/DoorControls";
 import { useDoorStatus } from "@/hooks/useDoorStatus";
 import { Activity, Clock, AlertTriangle } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
-import { DoorState } from "@/config/api";
+import { DoorState, DoorStateLabels } from "@/config/api";
 
 export default function Dashboard() {
   const { status, isLoading, activeCommand, error, sendCommand } = useDoorStatus();
@@ -75,7 +75,7 @@ export default function Dashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Door State</p>
-                <p className="text-2xl font-bold capitalize">{status.state}</p>
+                <p className="text-2xl font-bold capitalize">{DoorStateLabels[status.state]}</p>
               </div>
               <div
                 className={`h-12 w-12 rounded-full flex items-center justify-center ${
