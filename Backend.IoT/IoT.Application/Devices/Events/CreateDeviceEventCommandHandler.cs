@@ -42,10 +42,19 @@ public sealed class CreateDeviceEventCommandHandler
                 .FirstOrDefaultAsync(cancellationToken);
 
             // if there's no command, or auto-close is NOT suppressed → schedule
-            if (lastCommand is null || !lastCommand.SuppressAutoClose)
+
+            //if (lastCommand is null || !lastCommand.SuppressAutoClose)
+            //{
+            //    await _autoClose.ScheduleAutoCloseAsync(request.DeviceId);
+            //}
+
+            if (lastCommand is null
+                || !lastCommand.SuppressAutoClose
+                || lastCommand.CommandType == DeviceCommandType.Close)
             {
                 await _autoClose.ScheduleAutoCloseAsync(request.DeviceId);
             }
+
         }
 
     }
