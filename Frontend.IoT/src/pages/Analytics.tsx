@@ -1,13 +1,15 @@
-import { useEffect, useState } from 'react';
-import { EventsTable } from '@/components/analytics/EventsTable';
-import { AnalyticsCharts } from '@/components/analytics/AnalyticsCharts';
-import { eventService, mockEvents, mockAnalytics } from '@/services/eventService';
-import { DoorEvent } from '@/config/api';
-import { useAuth } from '@/contexts/AuthContext';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Info } from 'lucide-react';
+import { useEffect, useState } from "react";
+import { EventsTable } from "@/components/analytics/EventsTable";
+import { AnalyticsCharts } from "@/components/analytics/AnalyticsCharts";
+// import { eventService, mockEvents, mockAnalytics } from '@/services/eventService';
+import { eventService, mockEvents, mockAnalytics } from "@/services/eventService";
+import { analyticsService } from "@/services/analyticsService";
+import { DoorEvent } from "@/config/api";
+import { useAuth } from "@/contexts/AuthContext";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Info } from "lucide-react";
 
 export default function Analytics() {
   const { token } = useAuth();
@@ -21,15 +23,19 @@ export default function Analytics() {
       if (!token) return;
 
       setIsLoading(true);
+      setUsingMockData(false);
+
       try {
-        const eventsData = await eventService.getEvents(token);
-        const analyticsData = await eventService.getAnalytics(token);
-        
+        const [eventsData, analyticsData] = await Promise.all([
+          eventService.getEvents(token),
+          analyticsService.get(token),
+        ]);
+
         setEvents(eventsData);
-        setAnalytics(analyticsData as typeof mockAnalytics);
-        
-        // Check if we got mock data
-        if (eventsData === mockEvents) {
+        setAnalytics(analyticsData);
+
+        // detect fallback usage
+        if (eventsData === mockEvents || analyticsData === mockAnalytics) {
           setUsingMockData(true);
         }
       } catch {
@@ -49,9 +55,7 @@ export default function Analytics() {
       {/* Page header */}
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Analytics</h1>
-        <p className="text-muted-foreground">
-          View door activity history and usage statistics
-        </p>
+        <p className="text-muted-foreground">View door activity history and usage statistics</p>
       </div>
 
       {/* Mock data notice */}

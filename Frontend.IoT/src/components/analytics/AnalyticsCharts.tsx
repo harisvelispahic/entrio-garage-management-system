@@ -1,6 +1,6 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-import { BarChart3, PieChart as PieChartIcon, Activity } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
+import { BarChart3, PieChart as PieChartIcon, Activity } from "lucide-react";
 
 interface OpensPerDayData {
   day: string;
@@ -34,28 +34,22 @@ export function AnalyticsCharts({ opensPerDay, openVsClosed, eventSources }: Ana
           <div className="h-[250px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={opensPerDay}>
-                <XAxis 
-                  dataKey="day" 
-                  stroke="hsl(var(--muted-foreground))"
-                  fontSize={12}
-                />
-                <YAxis 
-                  stroke="hsl(var(--muted-foreground))"
-                  fontSize={12}
-                />
+                <XAxis dataKey="day" stroke="hsl(var(--muted-foreground))" fontSize={12} />
+                <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: 'hsl(var(--card))',
-                    border: '1px solid hsl(var(--border))',
-                    borderRadius: '8px',
+                    backgroundColor: "hsl(var(--card))",
+                    border: "1px solid hsl(var(--border))",
+                    borderRadius: "8px",
+                    color: "white",
                   }}
-                  labelStyle={{ color: 'hsl(var(--foreground))' }}
+                  labelStyle={{ color: "hsl(var(--foreground))" }}
                 />
-                <Bar 
-                  dataKey="opens" 
-                  fill="hsl(var(--primary))"
-                  radius={[4, 4, 0, 0]}
-                />
+                <Bar dataKey="opens" radius={[4, 4, 0, 0]}>
+                  {opensPerDay.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={`hsl(${180 + index * 25}, 70%, 50%)`} />
+                  ))}
+                </Bar>
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -89,9 +83,10 @@ export function AnalyticsCharts({ opensPerDay, openVsClosed, eventSources }: Ana
                 </Pie>
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: 'hsl(var(--card))',
-                    border: '1px solid hsl(var(--border))',
-                    borderRadius: '8px',
+                    backgroundColor: "hsl(var(--card))",
+                    border: "1px solid hsl(var(--border))",
+                    borderRadius: "8px",
+                    color: "white",
                   }}
                 />
               </PieChart>
@@ -100,10 +95,7 @@ export function AnalyticsCharts({ opensPerDay, openVsClosed, eventSources }: Ana
           <div className="flex justify-center gap-4 mt-2">
             {openVsClosed.map((item) => (
               <div key={item.name} className="flex items-center gap-2 text-sm">
-                <div 
-                  className="w-3 h-3 rounded-full" 
-                  style={{ backgroundColor: item.color }}
-                />
+                <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
                 <span className="text-muted-foreground">{item.name}</span>
               </div>
             ))}
@@ -138,9 +130,10 @@ export function AnalyticsCharts({ opensPerDay, openVsClosed, eventSources }: Ana
                 </Pie>
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: 'hsl(var(--card))',
-                    border: '1px solid hsl(var(--border))',
-                    borderRadius: '8px',
+                    backgroundColor: "hsl(var(--card))",
+                    border: "1px solid hsl(var(--border))",
+                    borderRadius: "8px",
+                    color: "white",
                   }}
                 />
               </PieChart>
@@ -149,10 +142,7 @@ export function AnalyticsCharts({ opensPerDay, openVsClosed, eventSources }: Ana
           <div className="flex flex-wrap justify-center gap-3 mt-2">
             {eventSources.map((item) => (
               <div key={item.name} className="flex items-center gap-2 text-sm">
-                <div 
-                  className="w-3 h-3 rounded-full" 
-                  style={{ backgroundColor: item.color }}
-                />
+                <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
                 <span className="text-muted-foreground">{item.name}</span>
               </div>
             ))}

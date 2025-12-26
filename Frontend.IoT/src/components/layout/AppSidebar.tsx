@@ -1,5 +1,5 @@
-import { NavLink, useLocation } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
+import { NavLink, useLocation } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   Sidebar,
   SidebarContent,
@@ -11,23 +11,15 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from '@/components/ui/sidebar';
-import { Button } from '@/components/ui/button';
-import { 
-  LayoutDashboard, 
-  Calendar, 
-  BarChart3, 
-  DoorOpen, 
-  LogOut,
-  Settings,
-  Cog
-} from 'lucide-react';
-import { cn } from '@/lib/utils';
+} from "@/components/ui/sidebar";
+import { Button } from "@/components/ui/button";
+import { LayoutDashboard, Calendar, BarChart3, DoorOpen, LogOut, Settings, Cog } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const menuItems = [
-  { title: 'Dashboard', url: '/dashboard', icon: LayoutDashboard },
-  { title: 'Schedules', url: '/schedules', icon: Calendar },
-  { title: 'Analytics', url: '/analytics', icon: BarChart3 },
+  { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
+  { title: "Schedules", url: "/schedules", icon: Calendar },
+  { title: "Analytics", url: "/analytics", icon: BarChart3 },
 ];
 
 export function AppSidebar() {
@@ -42,17 +34,15 @@ export function AppSidebar() {
             <DoorOpen className="h-5 w-5 text-primary" />
           </div>
           <div>
-            <h2 className="font-semibold text-sidebar-foreground">Smart Garage</h2>
-            <p className="text-xs text-sidebar-foreground/60">Control System</p>
+            <h2 className="font-semibold text-sidebar-foreground">Entrio</h2>
+            <p className="text-xs text-sidebar-foreground/60">Garage Management System</p>
           </div>
         </div>
       </SidebarHeader>
 
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel className="text-sidebar-foreground/60">
-            Navigation
-          </SidebarGroupLabel>
+          <SidebarGroupLabel className="text-sidebar-foreground/60">Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {menuItems.map((item) => {
@@ -63,16 +53,15 @@ export function AppSidebar() {
                       <NavLink
                         to={item.url}
                         className={cn(
-                          'flex items-center gap-3 px-3 py-2 rounded-lg transition-all',
+                          "flex items-center gap-3 px-3 py-2 rounded-lg transition-all",
                           isActive
-                            ? 'bg-sidebar-accent text-primary font-medium'
-                            : 'text-sidebar-foreground hover:bg-sidebar-accent/50'
+                            ? "bg-sidebar-accent text-primary font-medium"
+                            : "text-sidebar-foreground hover:bg-sidebar-accent/50"
                         )}
                       >
-                        <item.icon className={cn(
-                          'h-5 w-5',
-                          isActive ? 'text-primary' : 'text-sidebar-foreground/70'
-                        )} />
+                        <item.icon
+                          className={cn("h-5 w-5", isActive ? "text-primary" : "text-sidebar-foreground/70")}
+                        />
                         <span>{item.title}</span>
                       </NavLink>
                     </SidebarMenuButton>
@@ -84,9 +73,7 @@ export function AppSidebar() {
         </SidebarGroup>
 
         <SidebarGroup>
-          <SidebarGroupLabel className="text-sidebar-foreground/60">
-            System
-          </SidebarGroupLabel>
+          <SidebarGroupLabel className="text-sidebar-foreground/60">System</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
@@ -105,7 +92,7 @@ export function AppSidebar() {
       <SidebarFooter className="p-4 border-t border-sidebar-border">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-sm text-sidebar-foreground/60">
-            <Cog className="h-4 w-4 animate-spin" style={{ animationDuration: '3s' }} />
+            <Cog className="h-4 w-4 animate-spin" style={{ animationDuration: "3s" }} />
             <span>ESP32 Connected</span>
           </div>
           <Button
