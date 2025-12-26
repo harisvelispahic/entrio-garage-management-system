@@ -84,8 +84,10 @@ public class DoorController : ControllerBase
         {
             position = status.PositionPercent,
             state = status.DoorState,
+            obstacle = status.ObstacleDetected,
             lastUpdated = status.UpdatedAtUtc
         });
+
     }
 
 

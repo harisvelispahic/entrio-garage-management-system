@@ -75,7 +75,11 @@ export default function Dashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Door State</p>
-                <p className="text-2xl font-bold capitalize">{DoorStateLabels[status.state]}</p>
+                {status.obstacle ? (
+                  <span className="text-red-500 text-2xl font-semibold">Obstacle detected</span>
+                ) : (
+                  <p className="text-2xl font-bold capitalize">{DoorStateLabels[status.state]}</p>
+                )}
               </div>
               <div
                 className={`h-12 w-12 rounded-full flex items-center justify-center ${

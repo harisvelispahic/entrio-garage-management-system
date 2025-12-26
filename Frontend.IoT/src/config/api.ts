@@ -33,6 +33,7 @@ export interface LoginResponse {
 export interface DoorStatus {
   position: number; // 0-100, 0 = closed, 100 = open
   state: DoorState;
+  obstacle?: boolean;
   lastUpdated?: string;
 }
 
