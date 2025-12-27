@@ -17,24 +17,33 @@ public class AutoCloseService
         var settings = await _db.AutoCloseSettings
             .FirstOrDefaultAsync(x => x.DeviceId == deviceId);
 
-        // nothing to do
         if (settings is null || !settings.Enabled)
             return;
 
-        // when should auto-close run
-        var executeAt = DateTime.UtcNow.AddSeconds(settings.AfterSeconds);
+        // ❗ 1) deactivate all existing future auto-close schedules
+        var existing = await _db.Schedules
+            .Where(s =>
+                s.DeviceId == deviceId &&
+                s.IsActive &&
+                !s.WasTriggered)
+            .ToListAsync();
 
-        // target % (null = full close), will be ignored for close command
-        var target = 50;
+        foreach (var s in existing)
+            s.Deactivate();
+
+        // ❗ 2) calculate new execution time
+        var executeAt = DateTime.UtcNow.AddSeconds(settings.AfterSeconds);
 
         var schedule = new ScheduleEntity(
             deviceId: deviceId,
             commandType: DeviceCommandType.Close,
-            targetPercentage: target,
+            targetPercentage: null,        // full close
             executeAtUtcUtc: executeAt
         );
 
         _db.Schedules.Add(schedule);
+
         await _db.SaveChangesAsync(default);
     }
+
 }

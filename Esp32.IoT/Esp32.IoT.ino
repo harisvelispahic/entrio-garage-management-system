@@ -310,6 +310,11 @@ void detectFlashes() {
   int rawValue = analogRead(LDR_PIN);
   bool isBright = rawValue > FLASH_THRESHOLD;
 
+  if (!authWindowActive) {
+    wasBright = isBright;
+    return;
+  }
+
   if (isBright && !wasBright) {
     unsigned long now = millis();
 
@@ -458,7 +463,8 @@ void checkRFID() {
     authWindowActive = true;
     authWindowStartTime = millis();
 
-    triggerMotorLocal();
+    flashCount = 0;                  // reset flashes
+    Serial.println("Auth window opened — waiting for double flash");
 
     delay(250);
     digitalWrite(GREEN_LED, LOW);
