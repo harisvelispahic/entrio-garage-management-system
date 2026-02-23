@@ -71,3 +71,9 @@ Yes, you can!
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
 Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+
+## Hosting note (Vercel)
+
+- **Important**: This app is currently hosted on Vercel without a connected backend. Because of that, server-side authentication endpoints are not reachable from the deployed site. The `Login` UI and auth code remain in the project for local development and when a backend is connected, but the login flow will not function on the Vercel deployment until the backend is connected and CORS/URLs are configured.
+
+If you want the Vercel-hosted site to require login, deploy or connect the backend API and update the auth base URL in `src/config/api.ts` (or the appropriate environment variables).

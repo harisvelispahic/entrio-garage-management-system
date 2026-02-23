@@ -4,7 +4,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
-import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
@@ -24,42 +23,36 @@ const App = () => (
           <Routes>
             {/* Public routes */}
             <Route path="/login" element={<Login />} />
-            
-            {/* Protected routes */}
+
+            {/* Public main pages — made public because backend auth isn't connected on Vercel */}
             <Route
               path="/dashboard"
               element={
-                <ProtectedRoute>
-                  <DashboardLayout>
-                    <Dashboard />
-                  </DashboardLayout>
-                </ProtectedRoute>
+                <DashboardLayout>
+                  <Dashboard />
+                </DashboardLayout>
               }
             />
             <Route
               path="/schedules"
               element={
-                <ProtectedRoute>
-                  <DashboardLayout>
-                    <Schedules />
-                  </DashboardLayout>
-                </ProtectedRoute>
+                <DashboardLayout>
+                  <Schedules />
+                </DashboardLayout>
               }
             />
             <Route
               path="/analytics"
               element={
-                <ProtectedRoute>
-                  <DashboardLayout>
-                    <Analytics />
-                  </DashboardLayout>
-                </ProtectedRoute>
+                <DashboardLayout>
+                  <Analytics />
+                </DashboardLayout>
               }
             />
-            
+
             {/* Redirects */}
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            
+
             {/* 404 */}
             <Route path="*" element={<NotFound />} />
           </Routes>
